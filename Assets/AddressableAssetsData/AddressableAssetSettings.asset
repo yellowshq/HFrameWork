@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: 02e006105071303479b8decb8ce6f37f
+  m_DefaultGroup: abd2713aa9cf5de4eab4cd568499284f
   m_BuildRemoteCatalog: 1
   m_BundleLocalCatalog: 0
   m_DisableCatalogUpdateOnStart: 1
@@ -29,10 +29,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bb33a46aa11952849b5e92b16247dcbb, type: 2}
   - {fileID: 11400000, guid: 99ad151f5c3d08946b5ed925ca28c98d, type: 2}
   - {fileID: 11400000, guid: 3e179a7289469304ca6d08aa1d1966a7, type: 2}
-  - {fileID: 11400000, guid: 2f9342796d523424aaa8a3be2fcba0b7, type: 2}
+  - {fileID: 11400000, guid: 747c35d5c7f8bc64c97e803371cb86ff, type: 2}
   - {fileID: 11400000, guid: 7b624ccbef82b87458a306d000bb3949, type: 2}
-  - {fileID: 11400000, guid: a1f44d76a76778a4a83362e55e7c3f82, type: 2}
-  - {fileID: 11400000, guid: dd2159e7dbb23cd4fb6e43a73f086026, type: 2}
+  - {fileID: 11400000, guid: a3774dd7a51050e4c9bc27e106db54e2, type: 2}
   - {fileID: 11400000, guid: e63c1116782283f43bb60fc82fb4d9fb, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
@@ -82,6 +81,8 @@ MonoBehaviour:
     - Atlas
     - BG
     - Single
+    - Public
+    - Loading
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: c103d091087ffde4299c384091ac025b, type: 2}

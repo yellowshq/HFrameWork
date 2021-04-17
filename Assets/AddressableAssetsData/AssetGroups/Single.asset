@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Single
   m_Data:
     m_SerializedData: []
-  m_GUID: 02e006105071303479b8decb8ce6f37f
+  m_GUID: abd2713aa9cf5de4eab4cd568499284f
   m_SerializeEntries:
   - m_GUID: 91fa08f0942d5c242a24bcd5acffb58f
     m_Address: test.jpg

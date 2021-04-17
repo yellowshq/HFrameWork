@@ -10,32 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Init
+  m_Name: Loading
   m_EditorClassIdentifier: 
-  m_GroupName: Init
+  m_GroupName: Loading
   m_Data:
     m_SerializedData: []
-  m_GUID: b4e07417520ca1a449b809a63407b7ed
+  m_GUID: 44cebcba74791fa4e877517d1aa0dcd7
   m_SerializeEntries:
   - m_GUID: 4c7be8549018de44eb877fd701f246fa
     m_Address: Cube 1.mat
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Init
-    m_MainAsset: {fileID: 2100000, guid: 4c7be8549018de44eb877fd701f246fa, type: 2}
-    m_TargetAsset: {fileID: 2100000, guid: 4c7be8549018de44eb877fd701f246fa, type: 2}
+    - Loading
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: ad23b8aeee262714eb2bd2528a1be2a3
     m_Address: Cube.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Init
-    m_MainAsset: {fileID: 7906104629030565872, guid: ad23b8aeee262714eb2bd2528a1be2a3,
-      type: 3}
-    m_TargetAsset: {fileID: 7906104629030565872, guid: ad23b8aeee262714eb2bd2528a1be2a3,
-      type: 3}
+    - Loading
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: df5e1c5f235ede245892323bd8fd9b00, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 6eb57b6695083d5419ec67e49ab1332d, type: 2}
-    - {fileID: 11400000, guid: 9dcbd669405e53546a19127f750ad61b, type: 2}
+    - {fileID: 11400000, guid: 1925ad6bd106d4a46814a68e586483fb, type: 2}
+    - {fileID: 11400000, guid: 3fce709d748f4614a97d2a35654860d5, type: 2}

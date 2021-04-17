@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HFrameWork.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,21 +10,30 @@ public class LoadAssets : MonoBehaviour
 {
     private List<object> _updateKeys;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void LoadAsset(string name)
     {
-        Addressables.LoadAssetAsync<GameObject>(name).Completed += OnLoadComplete;
+        //Addressables.LoadAssetAsync<GameObject>(name).Completed += OnLoadComplete;
+        //AssetCacheManager.Instance.CacheObject<GameObject>(name, "Test", go=> {
+        //    AssetCacheManager.Instance.CreateObject<GameObject>(name, "Test");
+        //});
+        //AssetCacheManager.Instance.LoadAndInstantiateAsync(name, "Test", go =>
+        //{
+        //    HFrameWork.Core.Logger.LogError("aaaaaaaaa");
+        //});
+
+        AssetCacheManager.Instance.CacheObjects(new string[] { "Cube", "Sphere" }, "Test", list =>
+          {
+              for (int i = 0; i < list.Count; i++)
+              {
+                  HFrameWork.Core.Logger.Log(list[i].name);
+              }
+              AssetCacheManager.Instance.CreateObject<GameObject>(name, "Test");
+          });
+    }
+
+    private void OnLoadComplete(GameObject obj)
+    {
+        
     }
 
     private void OnLoadComplete(AsyncOperationHandle<GameObject> obj)
@@ -123,11 +133,6 @@ public class LoadAssets : MonoBehaviour
             LoadAsset("Cube");
         }
         y += 120;
-        if (GUI.Button(new Rect(0, y, 100, 60), "卸载Cube"))
-        {
-            LoadAsset("Sphere");
-        }
-        y += 120;
         if (GUI.Button(new Rect(0, y, 100, 60), "加载Sphere"))
         {
             LoadAsset("Sphere");
@@ -142,11 +147,25 @@ public class LoadAssets : MonoBehaviour
         {
             LoadAsset("RemoteStatic");
         }
-
+        y += 120;
         if (GUI.Button(new Rect(0, y, 100, 60), "加载 RemoteNoStatic"))
         {
             LoadAsset("RemoteNoStatic");
         }
+
+        y += 120;
+        if (GUI.Button(new Rect(0, y, 100, 60), "Release"))
+        {
+            AssetCacheManager.Instance.ReleaseGroup("Test");
+        }
+
+        y += 120;
+        if (GUI.Button(new Rect(0, y, 100, 60), "Create Cube"))
+        {
+            AssetCacheManager.Instance.CreateObject<GameObject>("Cube", "Test");
+        }
+
+
         if (GUI.Button(new Rect(200, 0, 100, 60), "UpdateCatalog"))
         {
             UpdateCatalog();
@@ -156,5 +175,7 @@ public class LoadAssets : MonoBehaviour
         {
             DownLoad();
         }
+
+
     }
 }

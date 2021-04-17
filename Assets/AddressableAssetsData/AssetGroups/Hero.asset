@@ -15,17 +15,15 @@ MonoBehaviour:
   m_GroupName: Hero
   m_Data:
     m_SerializedData: []
-  m_GUID: b70132bfd68b2a5439e0f86f3b2a60b6
+  m_GUID: 223235d9fac3aac4ba69d78be8c6703e
   m_SerializeEntries:
   - m_GUID: ee6dcdc42c900de4bba09ddf6576210b
     m_Address: Cube 1.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - Hero
-    m_MainAsset: {fileID: 7906104629030565872, guid: ee6dcdc42c900de4bba09ddf6576210b,
-      type: 3}
-    m_TargetAsset: {fileID: 7906104629030565872, guid: ee6dcdc42c900de4bba09ddf6576210b,
-      type: 3}
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: df5e1c5f235ede245892323bd8fd9b00, type: 2}
   m_SchemaSet:
