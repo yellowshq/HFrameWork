@@ -14,12 +14,12 @@ namespace HFrameWork.Core
         public string key = "";
         public bool isUse = false;
         public bool isLoadAndInstance = false;
-        public AsyncOperationHandle<GameObject> handler;
+        public List<AsyncOperationHandle<GameObject>> handlers;
         public bool isMerge = false;
         public AsyncOperationHandle<IList<UnityEngine.Object>> mergeHandler;
     }
 
-    public class AssetCacheManager : MonoSingletonBehavior<AssetCacheManager>
+    public class AssetCacheManager : Singleton<AssetCacheManager>
     {
         private Dictionary<string, List<CacheItem>> cacheObjects;
         private List<CacheItem> cacheItems;
@@ -31,29 +31,25 @@ namespace HFrameWork.Core
 
         private void AddCache(string key ,string group, UnityEngine.Object obj,bool isLoadAndInstance=false, AsyncOperationHandle<GameObject> handler = default)
         {
-            if (cacheObjects.ContainsKey(group) == false)
+            CacheItem cacheItem = GetCache(key, group, isLoadAndInstance);
+            if (cacheItem != null)
             {
-                cacheObjects[group] = new List<CacheItem>();
-            }
-            List<CacheItem> caches = cacheObjects[group];
-            int length = caches.Count;
-            for (int i = 0; i < length; i++)
-            {
-                if(caches[i].key == key && caches[i].isLoadAndInstance == isLoadAndInstance)
+                if (isLoadAndInstance)
                 {
-                    return;
+                    cacheItem.handlers.Add(handler);
                 }
+                return;
             }
-            CacheItem cacheItem = GetCacheItem(key);
+            cacheItem = GetCacheItem(key,isLoadAndInstance);
             cacheItem.obj = obj;
             cacheItem.isUse = true;
             cacheItem.key = key;
             cacheItem.isLoadAndInstance = isLoadAndInstance;
-            cacheItem.handler = handler;
+            cacheItem.handlers.Add(handler);
             cacheObjects[group].Add(cacheItem);
         }
 
-        private void AddMergeCache(string key, string group, UnityEngine.Object obj, AsyncOperationHandle<IList<UnityEngine.Object>> handler = default)
+        private CacheItem GetCache(string key, string group, bool isLoadAndInstance = false)
         {
             if (cacheObjects.ContainsKey(group) == false)
             {
@@ -63,10 +59,19 @@ namespace HFrameWork.Core
             int length = caches.Count;
             for (int i = 0; i < length; i++)
             {
-                if (caches[i].key == key)
+                if (caches[i].key == key && caches[i].isLoadAndInstance == isLoadAndInstance)
                 {
-                    return;
+                    return caches[i];
                 }
+            }
+            return null;
+        }
+
+        private void AddMergeCache(string key, string group, UnityEngine.Object obj, AsyncOperationHandle<IList<UnityEngine.Object>> handler = default)
+        {
+            if (GetCache(key, group) != null)
+            {
+                return;
             }
             CacheItem cacheItem = GetCacheItem(key);
             cacheItem.obj = obj;
@@ -77,7 +82,7 @@ namespace HFrameWork.Core
             cacheObjects[group].Add(cacheItem);
         }
 
-        private CacheItem GetCacheItem(string key)
+        private CacheItem GetCacheItem(string key,bool isLoadAndInstance = false)
         {
             int length = cacheItems.Count;
             for (int i = 0; i < length; i++)
@@ -87,10 +92,16 @@ namespace HFrameWork.Core
                     return cacheItems[i];
                 }
             }
-            return new CacheItem() { instances = new List<UnityEngine.Object>() };
+            CacheItem cacheItem = new CacheItem();
+            if (isLoadAndInstance)
+            {
+                cacheItem.handlers = new List<AsyncOperationHandle<GameObject>>();
+            }
+            cacheItem.instances = new List<UnityEngine.Object>();
+            return cacheItem;
         }
 
-        public async void CacheObject<T>(string key,string group,Action<T> onCompleted = null)
+        public async void CacheObject<T>(string key,string group,Action<T> onCompleted = null) where T:class
         {
             if(string.IsNullOrEmpty(key))
             {
@@ -100,6 +111,12 @@ namespace HFrameWork.Core
             if (string.IsNullOrEmpty(group))
             {
                 Logger.LogError("CacheObject Group 为空 ");
+                return;
+            }
+            CacheItem cacheItem = GetCache(key, group);
+            if (cacheItem != null)
+            {
+                onCompleted?.Invoke(cacheItem.obj as T);
                 return;
             }
             var handler = Addressables.LoadAssetAsync<T>(key);
@@ -120,7 +137,7 @@ namespace HFrameWork.Core
             {
                 if(!string.IsNullOrEmpty(item.key) && item.key == key)
                 {
-                    UnityEngine.Object insObj = Instantiate(item.obj);
+                    UnityEngine.Object insObj = GameObject.Instantiate(item.obj);
                     item.instances.Add(insObj);
                     return insObj as T;
                 }
@@ -186,6 +203,14 @@ namespace HFrameWork.Core
             onComplete?.Invoke(handler.Result);
         }
 
+        public async void LoadSceneAsync(string key,Action onComplete = null)
+        {
+            var handler = Addressables.LoadSceneAsync(key);
+            await handler.Task;
+            Addressables.Release(handler);
+            onComplete?.Invoke();
+        }
+
         public void ReleaseGroup(string group)
         {
             if (cacheObjects.ContainsKey(group) == false)
@@ -198,7 +223,10 @@ namespace HFrameWork.Core
             {
                 if (item.isLoadAndInstance)
                 {
-                    Addressables.ReleaseInstance(item.handler);
+                    foreach (var handler in item.handlers)
+                    {
+                        Addressables.ReleaseInstance(handler);
+                    }
                 }
                 else
                 {
@@ -207,7 +235,7 @@ namespace HFrameWork.Core
                         int length = item.instances.Count;
                         for (int i = 0; i < length; i++)
                         {
-                            Destroy(item.instances[i]);
+                            GameObject.Destroy(item.instances[i]);
                         }
                         item.instances.Clear();
                     }

@@ -666,10 +666,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: 8cb65b0e-9f49-463c-a6e6-a63f0ab3333e
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: TurnBase
+  organizationId: hqyellows
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

@@ -7,7 +7,7 @@ namespace HFrameWork.Core
     public class Singleton<T> where T : Singleton<T>, new()
     {
         private static T _instance = null;
-        public static T Instence
+        public static T Instance
         {
             get
             {
@@ -18,5 +18,13 @@ namespace HFrameWork.Core
                 return _instance;
             }
         }
+
+        protected Singleton()
+        {
+            Logger.LogError("Singleton");
+            Init();
+        }
+
+        public virtual void Init() { }
     }
 }

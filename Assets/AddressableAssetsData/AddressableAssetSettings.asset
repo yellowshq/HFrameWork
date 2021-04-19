@@ -33,6 +33,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7b624ccbef82b87458a306d000bb3949, type: 2}
   - {fileID: 11400000, guid: a3774dd7a51050e4c9bc27e106db54e2, type: 2}
   - {fileID: 11400000, guid: e63c1116782283f43bb60fc82fb4d9fb, type: 2}
+  - {fileID: 11400000, guid: 4a567801f1ee9974cb7e3c0e8a928aad, type: 2}
+  - {fileID: 11400000, guid: e1446fb64409096488fca40828c46c4d, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -53,7 +55,7 @@ MonoBehaviour:
       - m_Id: f1d5a27753b46a24a8448466b9e69b87
         m_Value: ServerData/[BuildTarget]
       - m_Id: 2df0d7c48c6a50d44879940ab7466c0a
-        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+        m_Value: https://assetstreaming.unity.cn/client_api/v1/buckets/866b6af8-2ba3-47c4-96bf-f6bc60942e6c/release_by_badge/latest/entry_by_path/content/?path=
     m_ProfileEntryNames:
     - m_Id: 15d1b0ca0aad4524ab9bf2505d21c6a9
       m_Name: BuildTarget

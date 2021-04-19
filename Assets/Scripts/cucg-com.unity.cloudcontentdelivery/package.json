@@ -1,0 +1,19 @@
+{
+	"name": "com.unity.cloudcontentdelivery",
+	"displayName":"Cloud Content Delivery",
+	"version": "1.1.0",
+	"unity": "2018.3",
+	"description": "It is a Unity Package that connect Editor to Unity Content Delivery Services. It allows user create buckets, releases and upload addressables assets to cloud from Editor.",
+  "keywords": [
+    "asset",
+    "resources",
+    "bundle",
+    "bundles",
+    "assetbundles",
+    "TencentCloud"
+  ],
+  "dependencies": {
+    "com.unity.addressables" : "1.8.3",
+    "com.unity.scriptablebuildpipeline": "1.7.2"
+	}
+}
