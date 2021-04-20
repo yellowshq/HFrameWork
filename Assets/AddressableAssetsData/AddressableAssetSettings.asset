@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a46d0ae32c3544b7d98094e6448a9, type: 3}
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
-  m_DefaultGroup: abd2713aa9cf5de4eab4cd568499284f
+  m_DefaultGroup: 51999c8b620310449b3c7388f0f3e82c
   m_BuildRemoteCatalog: 1
   m_BundleLocalCatalog: 0
   m_DisableCatalogUpdateOnStart: 1
@@ -35,6 +35,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e63c1116782283f43bb60fc82fb4d9fb, type: 2}
   - {fileID: 11400000, guid: 4a567801f1ee9974cb7e3c0e8a928aad, type: 2}
   - {fileID: 11400000, guid: e1446fb64409096488fca40828c46c4d, type: 2}
+  - {fileID: 11400000, guid: dd2159e7dbb23cd4fb6e43a73f086026, type: 2}
+  - {fileID: 11400000, guid: 83ed6fe553f216e4a831e0e77ec2bbb3, type: 2}
+  - {fileID: 11400000, guid: 413cee900cedde84bbd472fc7ba6b9b1, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -85,6 +88,8 @@ MonoBehaviour:
     - Single
     - Public
     - Loading
+    - LuaFile
+    - LuaPb
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: c103d091087ffde4299c384091ac025b, type: 2}

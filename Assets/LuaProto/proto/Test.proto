@@ -1,0 +1,7 @@
+package Test;
+
+message People
+{
+    required string name=1;
+    required int64 sex=2;
+}

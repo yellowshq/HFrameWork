@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -16,7 +17,7 @@ namespace HFrameWork.Core
         public bool isLoadAndInstance = false;
         public List<AsyncOperationHandle<GameObject>> handlers;
         public bool isMerge = false;
-        public AsyncOperationHandle<IList<UnityEngine.Object>> mergeHandler;
+        public AsyncOperationHandle mergeHandler;
     }
 
     public class AssetCacheManager : Singleton<AssetCacheManager>
@@ -48,7 +49,6 @@ namespace HFrameWork.Core
             cacheItem.handlers.Add(handler);
             cacheObjects[group].Add(cacheItem);
         }
-
         private CacheItem GetCache(string key, string group, bool isLoadAndInstance = false)
         {
             if (cacheObjects.ContainsKey(group) == false)
@@ -67,7 +67,7 @@ namespace HFrameWork.Core
             return null;
         }
 
-        private void AddMergeCache(string key, string group, UnityEngine.Object obj, AsyncOperationHandle<IList<UnityEngine.Object>> handler = default)
+        private void AddMergeCache(string key, string group, UnityEngine.Object obj, AsyncOperationHandle handler = default)
         {
             if (GetCache(key, group) != null)
             {
@@ -261,6 +261,41 @@ namespace HFrameWork.Core
             caches.Clear();
         }
 
+        public async Task LoadLuaAsync(string Label,string groupName = "public", Action<IList<TextAsset>> onComplete = null)
+        {
+            var handler = Addressables.LoadAssetsAsync<TextAsset>(Label, null);
+            await handler.Task;
+            int length = handler.Result.Count;
+            for (int i = 0; i < length; i++)
+            {
+                AddMergeCache(handler.Result[i].name, groupName, handler.Result[i], handler);
+            }
+            onComplete?.Invoke(handler.Result);
+        }
+
+        public byte[] LoadLuaFile(string fileName,string groupName = "public")
+        {
+            var cacheItem = GetCache(fileName, groupName);
+            if (cacheItem!=null && cacheItem.obj!=null)
+            {
+                var pbFile = cacheItem.obj as TextAsset;
+                return pbFile.bytes;
+            }
+            Logger.LogError("缓存组中没有对应的 Key "+ fileName);
+            return null;
+        }
+
+        public byte[] LoadPbFile(string fileName,string groupName = "public")
+        {
+            var cacheItem = GetCache(fileName, groupName);
+            if (cacheItem != null && cacheItem.obj != null)
+            {
+                var pbFile = cacheItem.obj as TextAsset;
+                return pbFile.bytes;
+            }
+            Logger.LogError("缓存组中没有对应的 Key " + fileName);
+            return null;
+        }
     }
 }
 

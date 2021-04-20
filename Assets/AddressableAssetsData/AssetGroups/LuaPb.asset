@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: LuaPb
+  m_EditorClassIdentifier: 
+  m_GroupName: LuaPb
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 31f5552b26a682f4fa860d62d4bf0e87
+  m_SerializeEntries:
+  - m_GUID: a17c5c89dac79334ba25255cb0d735fe
+    m_Address: Test.pb.bytes
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LuaPb
+    m_MainAsset: {fileID: 4900000, guid: a17c5c89dac79334ba25255cb0d735fe, type: 3}
+    m_TargetAsset: {fileID: 4900000, guid: a17c5c89dac79334ba25255cb0d735fe, type: 3}
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: df5e1c5f235ede245892323bd8fd9b00, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: a5defcf37e56e964f87f1ba8e4b20542, type: 2}
+    - {fileID: 11400000, guid: 84e5c7e9a0bf8ee4389a95d4ddaaf7e5, type: 2}

@@ -1,0 +1,23 @@
+local function initPbFiles()
+	local pb=require "pb"
+	local LuaManager=CS.HFrameWork.Core.LuaManager.Instance
+	local pbFile = LuaManager:LoadPbFile("Test.pb")
+	pb.load(pbFile)
+
+	local people={
+		name="hq",
+		sex =1,
+	}
+
+	local bytes = assert(pb.encode("Test.People", people))
+	print(pb.tohex(bytes))
+
+	local recvData = assert(pb.decode("Test.People",bytes))
+	print(recvData.name)
+end
+
+function DoInit()
+	initPbFiles()
+	print("hello world")
+end
+

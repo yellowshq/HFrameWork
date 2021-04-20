@@ -16,6 +16,9 @@ public class BuildEditor
     public static string directoryRootPath = "Assets/Sources/Product/Directory";
     public static string singleRootPath = "Assets/Sources/Product/Single";
 
+    public static string luaRootPath = "Assets/Scripts/Lua/LuaFile";
+    public static string luaPbRootPath = "Assets/Scripts/Lua/LuaPb";
+
     [MenuItem("AddOn/Build/AutoSetGroup")]
     public static void AutoSetGroup()
     {
@@ -24,6 +27,40 @@ public class BuildEditor
         GetAllDirectory(directoryRootPath);
 
         GetSingleDirectory(singleRootPath);
+
+        SetLuaGroup(luaRootPath);
+        SetLuaGroup(luaPbRootPath);
+    }
+
+    private static void SetLuaGroup(string _path)
+    {
+        string[] pa = _path.Split('/');
+        string groupName = pa[pa.Length - 1];
+        AddressableAssetGroup group = CreateGroup(groupName, false, false, false);
+
+        AddEntryLuaGroup(group, _path);
+    }
+
+    private static void AddEntryLuaGroup(AddressableAssetGroup group,string _path)
+    {
+        var guids = AssetDatabase.FindAssets("t:Object", new[] { _path });
+
+        foreach (var guid in guids)
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (!Directory.Exists(path))
+                {
+                    string address = Path.GetFileName(path);
+                    AddAssetEntry(group, guid, address);
+                }
+                else if (Directory.GetDirectories(path).Length > 0)
+                {
+                    AddEntryLuaGroup(group, path);
+                }
+            }
+        }
     }
 
     public static void GetAllDirectory(string _path,bool isInit = false)
