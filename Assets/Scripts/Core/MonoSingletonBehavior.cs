@@ -31,7 +31,7 @@ namespace HFrameWork.Core
             Init();
         }
 
-        public virtual void Init()
+        protected virtual void Init()
         {
 
         }

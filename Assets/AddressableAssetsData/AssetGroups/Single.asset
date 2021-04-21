@@ -17,6 +17,27 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: abd2713aa9cf5de4eab4cd568499284f
   m_SerializeEntries:
+  - m_GUID: 86796173bf9d8aa4782aed1b65b1a58c
+    m_Address: loding_wu.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Single
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 9031e44b59e21894494b7a7a29465d7a
+    m_Address: loding_wei.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Single
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 905f1f82d7fecf04c925d2fa604418ed
+    m_Address: loding_shu.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Single
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   - m_GUID: 91fa08f0942d5c242a24bcd5acffb58f
     m_Address: test.jpg
     m_ReadOnly: 0

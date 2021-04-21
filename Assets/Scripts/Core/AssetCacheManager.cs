@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -24,7 +25,7 @@ namespace HFrameWork.Core
     {
         private Dictionary<string, List<CacheItem>> cacheObjects;
         private List<CacheItem> cacheItems;
-        public override void Init()
+        protected override void Init()
         {
             cacheItems = new List<CacheItem>(1024);
             cacheObjects = new Dictionary<string, List<CacheItem>>();
@@ -46,7 +47,7 @@ namespace HFrameWork.Core
             cacheItem.isUse = true;
             cacheItem.key = key;
             cacheItem.isLoadAndInstance = isLoadAndInstance;
-            cacheItem.handlers.Add(handler);
+            //cacheItem.handlers.Add(handler);
             cacheObjects[group].Add(cacheItem);
         }
         private CacheItem GetCache(string key, string group, bool isLoadAndInstance = false)
@@ -206,6 +207,7 @@ namespace HFrameWork.Core
         public async void LoadSceneAsync(string key,Action onComplete = null)
         {
             var handler = Addressables.LoadSceneAsync(key);
+            LoadingManager.Instance.ShowLoadingProcess("加载场景", handler);
             await handler.Task;
             Addressables.Release(handler);
             onComplete?.Invoke();
@@ -261,9 +263,10 @@ namespace HFrameWork.Core
             caches.Clear();
         }
 
-        public async Task LoadLuaAsync(string Label,string groupName = "public", Action<IList<TextAsset>> onComplete = null)
+        public async Task LoadLuaAsync(string[] Labels,string groupName = "public", Action<IList<TextAsset>> onComplete = null)
         {
-            var handler = Addressables.LoadAssetsAsync<TextAsset>(Label, null);
+            var handler = Addressables.LoadAssetsAsync<TextAsset>(Labels, null,Addressables.MergeMode.Union);
+            LoadingManager.Instance.ShowLoadingProcess("加载脚本", handler);
             await handler.Task;
             int length = handler.Result.Count;
             for (int i = 0; i < length; i++)

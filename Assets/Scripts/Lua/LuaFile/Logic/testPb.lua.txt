@@ -6,7 +6,8 @@ local function initPbFiles()
 
 	local people={
 		name="hq",
-		sex =1,
+		sex = 1,
+		age = 25,
 	}
 
 	local bytes = assert(pb.encode("Test.People", people))
@@ -14,10 +15,11 @@ local function initPbFiles()
 
 	local recvData = assert(pb.decode("Test.People",bytes))
 	print(recvData.name)
+	print(recvData.age)
 end
 
 function DoInit()
 	initPbFiles()
-	print("hello world")
+	print("hello world3")
 end
 

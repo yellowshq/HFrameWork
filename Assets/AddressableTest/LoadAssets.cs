@@ -13,14 +13,14 @@ public class LoadAssets : MonoBehaviour
     void LoadAsset(string name)
     {
         //Addressables.LoadAssetAsync<GameObject>(name).Completed += OnLoadComplete;
-        //AssetCacheManager.Instance.CacheObject<GameObject>(name, "Test", go =>
-        //{
-        //    AssetCacheManager.Instance.CreateObject<GameObject>(name, "Test");
-        //});
-        AssetCacheManager.Instance.LoadAndInstantiateAsync(name, "Test", go =>
+        AssetCacheManager.Instance.CacheObject<GameObject>(name, "Test", go =>
         {
-            HFrameWork.Core.Logger.LogError("aaaaaaaaa");
+            AssetCacheManager.Instance.CreateObject<GameObject>(name, "Test");
         });
+        //AssetCacheManager.Instance.LoadAndInstantiateAsync(name, "Test", go =>
+        //{
+        //    HFrameWork.Core.Logger.LogError("aaaaaaaaa");
+        //});
 
         //AssetCacheManager.Instance.CacheObjects(new string[] { "Cube", "Sphere" }, "Test", list =>
         //  {

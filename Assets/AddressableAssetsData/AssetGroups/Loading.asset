@@ -22,6 +22,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Loading
+    m_MainAsset: {fileID: 2100000, guid: 4c7be8549018de44eb877fd701f246fa, type: 2}
+    m_TargetAsset: {fileID: 2100000, guid: 4c7be8549018de44eb877fd701f246fa, type: 2}
+  - m_GUID: 597adcf1781843242822da4e5fe224a9
+    m_Address: LoadingView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Loading
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
   - m_GUID: ad23b8aeee262714eb2bd2528a1be2a3
@@ -29,8 +36,10 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Loading
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
+    m_MainAsset: {fileID: 7906104629030565872, guid: ad23b8aeee262714eb2bd2528a1be2a3,
+      type: 3}
+    m_TargetAsset: {fileID: 7906104629030565872, guid: ad23b8aeee262714eb2bd2528a1be2a3,
+      type: 3}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: df5e1c5f235ede245892323bd8fd9b00, type: 2}
   m_SchemaSet:

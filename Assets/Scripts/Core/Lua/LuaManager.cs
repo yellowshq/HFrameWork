@@ -14,7 +14,7 @@ namespace HFrameWork.Core
         internal const float GCInterval = 1;//1 second
         public int GCCount = 30;
         private int count = 0;
-        public override void Init()
+        protected override void Init()
         {
             InitLuaEnv();
         }

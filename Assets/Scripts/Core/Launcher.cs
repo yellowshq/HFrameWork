@@ -9,14 +9,20 @@ namespace HFrameWork.Core
     {
         private async void Start()
         {
+            await UpdateManager.Instance.StartUpdate();
+            Enter();
+        }
+
+        private async void Enter()
+        {
             await PreLoadAsset();
             LuaManager.Instance.LaunchGame();
+            SceneManager.Instance.LoadScene("SampleScene");
         }
 
         public async Task PreLoadAsset()
         {
-            await AssetCacheManager.Instance.LoadLuaAsync("LuaFile");
-            await AssetCacheManager.Instance.LoadLuaAsync("LuaPb");
+            await AssetCacheManager.Instance.LoadLuaAsync(new string[] { "LuaFile" , "LuaPb" });
         }
     }
 }

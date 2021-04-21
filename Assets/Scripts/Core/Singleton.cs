@@ -21,10 +21,9 @@ namespace HFrameWork.Core
 
         protected Singleton()
         {
-            Logger.LogError("Singleton");
             Init();
         }
 
-        public virtual void Init() { }
+        protected virtual void Init() { }
     }
 }
