@@ -299,6 +299,17 @@ namespace HFrameWork.Core
             Logger.LogError("缓存组中没有对应的 Key " + fileName);
             return null;
         }
+
+        public T LoadAsset<T>(string key,string groupName="") where T :UnityEngine.Object
+        {
+            var cacheItem = GetCache(key, groupName);
+            if (cacheItem != null && cacheItem.obj != null)
+            {
+                return cacheItem.obj as T;
+            }
+            Logger.LogError("缓存组中没有对应的 Key " + key);
+            return null;
+        }
     }
 }
 

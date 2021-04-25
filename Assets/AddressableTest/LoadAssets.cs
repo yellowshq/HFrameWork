@@ -177,6 +177,10 @@ public class LoadAssets : MonoBehaviour
             DownLoad();
         }
 
+        if (GUI.Button(new Rect(200, 240, 100, 60), "Connect"))
+        {
+            NetManager.Instance.Connect();
+        }
 
     }
 }

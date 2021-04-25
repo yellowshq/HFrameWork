@@ -30,6 +30,10 @@ public class BuildEditor
 
         SetLuaGroup(luaRootPath);
         SetLuaGroup(luaPbRootPath);
+
+        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
+        Debug.Log("AutoSetGroup Finished...");
     }
 
     private static void SetLuaGroup(string _path)

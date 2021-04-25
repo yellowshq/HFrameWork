@@ -22,8 +22,15 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - LuaFile
-    m_MainAsset: {fileID: 4900000, guid: 32e8ed02aedc6974d87eff7546aa6a1b, type: 3}
-    m_TargetAsset: {fileID: 4900000, guid: 32e8ed02aedc6974d87eff7546aa6a1b, type: 3}
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: e0533b5f21b4e0d46b72964fa611a449
+    m_Address: protoMap.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LuaFile
+    m_MainAsset: {fileID: 4900000, guid: e0533b5f21b4e0d46b72964fa611a449, type: 3}
+    m_TargetAsset: {fileID: 4900000, guid: e0533b5f21b4e0d46b72964fa611a449, type: 3}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: df5e1c5f235ede245892323bd8fd9b00, type: 2}
   m_SchemaSet:

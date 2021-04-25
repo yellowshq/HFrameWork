@@ -22,13 +22,27 @@ public class HToosEditor
         {
             if (protoFile.FullName.EndsWith(".proto"))
             {
-                string pbFile = protoFile.FullName.Replace(".proto", ".pb.bytes").Replace("\\", "/").Replace("/LuaProto/proto", "/Scripts/Lua/pb");
+                string pbFile = protoFile.FullName.Replace(".proto", ".pb.bytes").Replace("\\", "/").Replace("/LuaProto/proto", "/Scripts/Lua/LuaPb");
                 Debug.Log(pbFile);
                 string param = string.Format("-I{0} {1} -o {2}", protoPath, protoFile, pbFile);
                 var ans = RunProcessSync(protocPath, param);
                 Debug.Log(ans);
             }
         }
+        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
+    }
+
+    [MenuItem("Tools/GenProtoMap")]
+    public static void GenProtoMap()
+    {
+        string gencPath = Application.dataPath + "/LuaProto/protoc/GenProtoMap.exe";
+        Debug.Log($" protocPath {gencPath}");
+        string protoPath = Application.dataPath + "/LuaProto/proto/";
+        string targetPath = Application.dataPath + "/Scripts/Lua/LuaFile/Gen/protoMap.json";
+        string param = string.Format("{0} {1}", protoPath, targetPath);
+        var ans = RunProcessSync(gencPath, param);
+        Debug.Log(ans);
         AssetDatabase.Refresh();
         AssetDatabase.SaveAssets();
     }

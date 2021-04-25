@@ -1,0 +1,9 @@
+{
+  "protoMaps" : [
+    {
+      "msgID": "100001",
+      "msgName": "Person",
+      "pkgName": "test"
+    }
+  ]
+}

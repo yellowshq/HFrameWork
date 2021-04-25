@@ -5,16 +5,15 @@ local function initPbFiles()
 	pb.load(pbFile)
 
 	local people={
-		name="hq",
-		sex = 1,
+		Name="hq",
 		age = 25,
 	}
 
-	local bytes = assert(pb.encode("Test.People", people))
+	local bytes = assert(pb.encode("pb.Person", people))
 	print(pb.tohex(bytes))
 
-	local recvData = assert(pb.decode("Test.People",bytes))
-	print(recvData.name)
+	local recvData = assert(pb.decode("pb.Person",bytes))
+	print(recvData.Name)
 	print(recvData.age)
 end
 

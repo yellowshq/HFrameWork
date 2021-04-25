@@ -17,6 +17,7 @@ namespace HFrameWork.Core
         {
             await PreLoadAsset();
             LuaManager.Instance.LaunchGame();
+            NetManager.Instance.InitProtoMap();
             SceneManager.Instance.LoadScene("SampleScene");
         }
 
