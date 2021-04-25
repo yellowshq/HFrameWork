@@ -183,7 +183,7 @@ namespace HFrameWork.Core
 
         public void SendMsg(int id,byte[] data)
         {
-            if (!socket.Connected)
+            if (!CheckSocket())
             {
                 Logger.LogError("请检测网络");
                 return;
@@ -200,6 +200,10 @@ namespace HFrameWork.Core
         {
             try
             {
+                if (!CheckSocket())
+                {
+                    return;
+                }
                 int count = socket.EndReceive(ar);
                 buffCount = buffCount + count;
                 ProcessData();
@@ -212,8 +216,17 @@ namespace HFrameWork.Core
             }
         }
 
+        private bool CheckSocket()
+        {
+            return socket != null && socket.Connected;
+        }
+
         private void ProcessData()
         {
+            if (!CheckSocket())
+            {
+                return;
+            }
             if (buffCount < headLength)
             {
                 return;
