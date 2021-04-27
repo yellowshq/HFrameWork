@@ -36,9 +36,16 @@ namespace HFrameWork.Core
         }
         public void CallHandler(ProtoMap proto,Message message)
         {
-            MethodInfo handler = GetHandler(proto.msgID, proto.msgName);
-            object[] parameters = new object[] { message.GetData() };
-            handler.Invoke(MsgHandler, parameters);
+            //C#层的消息处理
+            //MethodInfo handler = GetHandler(proto.msgID, proto.msgName);
+            //if (handler!=null)
+            //{
+            //    object[] parameters = new object[] { message.GetData() };
+            //    handler.Invoke(MsgHandler, parameters);
+            //}
+
+            //暂时放到Lua侧处理
+            CSharpWrapper.Instance.MsgHandler(proto,message);
         }
     }
 }

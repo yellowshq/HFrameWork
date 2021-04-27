@@ -1,0 +1,276 @@
+printLevel = {
+    none = 0,
+    verbose = 1,
+    debug = 2,
+    info = 3,
+    warning = 4,
+    error = 5,
+    forever = 1000
+}
+
+local currentLevel = printLevel.verbose
+
+local function printByLevel(level, ...)
+    if currentLevel > level then
+        return
+    end
+    --return
+    print(...)
+end
+
+local function setPrintLevel(level)
+    currentLevel = level
+end
+
+function printn(...)
+    printByLevel(printLevel.none, ...)
+end
+
+function printv(...)
+    printByLevel(printLevel.verbose, ...)
+end
+
+function printd(...)
+    printByLevel(printLevel.debug, ...)
+end
+
+local function getPrintToStr(...)
+    local params = { ... }
+    local newParams = {}
+    for k, v in pairs(params) do
+        if not v then
+            v = "nil"
+        elseif type(v) ~= type("") then
+            v = tostring(v)
+        end
+        table.insert(newParams, v)
+    end
+    local str = table.concat(newParams, " ", 1, #newParams)
+    return str
+end
+
+function printw(...)
+    if currentLevel > printLevel.warning then
+        return
+    end
+
+    local str = getPrintToStr(...)
+    str = "<color=yellow>Warning:" .. str .. "</color>"
+    print(str)
+    --print(str .. debug.traceback())
+end
+
+function printe(...)
+    if currentLevel > printLevel.error then
+        return
+    end
+
+    local str = getPrintToStr(...)
+    str = "<color=red>Error:" .. str .. "</color>"
+    print(str)
+    
+end
+
+function printd(...)
+    local str = getPrintToStr(...)
+    CS.UnityEngine.Debug.Log(str)
+end
+
+function printf(...)
+    if currentLevel > printLevel.forever then
+        return
+    end
+
+    local str = getPrintToStr(...)
+    str = "<color=blue>Forever:" .. str .. "</color>"
+    print(str)
+end
+
+function prints(...)
+    if currentLevel > printLevel.warning then
+        return
+    end
+    local params = { ... }
+    local newParams = {}
+    for k, v in pairs(params) do
+        if not v then
+            v = "nil"
+        elseif type(v) ~= type("") then
+            v = tostring(v)
+        end
+        table.insert(newParams, v)
+    end
+    local str = table.concat(newParams, " ", 1, #newParams)
+    str = "<color=white>StackTrace:" .. str .. "</color>"
+    print(str .. debug.traceback())
+    --print(debug.traceback())
+end
+
+local function retAddNewLine(ret, newLine)
+    -- printw("retAddNewLine 1111", ret and ret.output and #ret.output, newLine)
+    if not ret then
+        return
+    end
+    ret.output = ret.output or {}
+    table.insert(ret.output, newLine)
+    -- printw("retAddNewLine 22222", #ret.output, newLine)
+end
+
+local function printAndAddToRet(str, ret, noPrint)
+    if not noPrint then
+        print(str)
+    end
+    -- printw("printAndAddToRet", str, ret, noPrint)
+    retAddNewLine(ret, str)
+end
+
+local function print_r(t, ret, noPrint)
+    local print_r_cache = {}
+    local output
+    local function sub_print_r(t, indent)
+        if (print_r_cache[tostring(t)]) then
+            printAndAddToRet(indent .. "*" .. tostring(t), ret, noPrint)
+        else
+            print_r_cache[tostring(t)] = true
+            if (type(t) == "table") then
+                for pos, val in pairs(t) do
+                    if (type(val) == "table") then
+                        printAndAddToRet(indent .. "[" .. pos .. "] => " .. tostring(t) .. " {", ret, noPrint)
+                        sub_print_r(val, indent .. string.rep(" ", string.len(pos) + 8))
+                        printAndAddToRet(indent .. string.rep(" ", string.len(pos) + 6) .. "}", ret, noPrint)
+                    elseif (type(val) == "string") then
+                        printAndAddToRet(indent .. "[" .. pos .. '] => \"' .. val .. '\"', ret, noPrint)
+                    else
+                        printAndAddToRet(indent .. "[" .. pos .. "] => " .. tostring(val), ret, noPrint)
+                    end
+                end
+            else
+                printAndAddToRet(indent .. tostring(t), ret, noPrint)
+            end
+        end
+    end
+    if (type(t) == "table") then
+        printAndAddToRet(tostring(t) .. " {", ret, noPrint)
+        sub_print_r(t, "  ")
+        printAndAddToRet("}", ret, noPrint)
+    else
+        sub_print_r(t, "  ")
+    end
+    printAndAddToRet("", ret, noPrint)
+end
+table.print = print_r
+
+local function printTableByLevel(t, level, ret)
+    table.print(t, ret, currentLevel > level)
+end
+
+table.printn = function(t, comment, ret)
+    printn(comment)
+    return printTableByLevel(t, printLevel.none, ret)
+end
+
+table.printv = function(t, comment, ret)
+    printv(string.format("<color=grey>table print %s</color>", comment))
+    return printTableByLevel(t, printLevel.verbose, ret)
+end
+
+table.printw = function(t, comment, ret)
+    printw(comment)
+    return printTableByLevel(t, printLevel.warning, ret)
+end
+
+table.printe = function(t, comment, ret)
+    printe(comment)
+    return printTableByLevel(t, printLevel.error, ret)
+end
+
+table.printd = function(t, comment, ret)
+    printd(comment)
+    return printTableByLevel(t, printLevel.debug, ret)
+end
+
+local function FormatValue(val)
+    if type(val) == "string" then
+        return string.format("%q", val)
+    end
+    return tostring(val)
+end
+
+local function FormatTable(t, tabcount)
+    tabcount = tabcount or 0
+    if tabcount > 5 then
+        --防止栈溢出
+        return "<table too deep>" .. tostring(t)
+    end
+    local str = ""
+    if type(t) == "table" then
+        for k, v in pairs(t) do
+            local tab = string.rep("\t", tabcount)
+            if type(v) == "table" then
+                str = str .. tab .. string.format("[%s] = {", FormatValue(k)) .. '\n'
+                str = str .. FormatTable(v, tabcount + 1) .. tab .. '}\n'
+            else
+                str = str .. tab .. string.format("[%s] = %s", FormatValue(k), FormatValue(v)) .. ',\n'
+            end
+        end
+    else
+        str = str .. tostring(t) .. '\n'
+    end
+    return str
+end
+
+local function dumpTab(tab,ind)
+    if(tab==nil)then return "nil" end;
+    local str="{";
+    if(ind==nil)then ind="  "; end;
+    --//each of table
+    for k,v in pairs(tab) do
+        --//key
+        if(type(k)=="string")then
+            k=tostring(k).." = ";
+        else
+            k="["..tostring(k).."] = ";
+        end;--//end if
+        --//value
+        local s="";
+        if(type(v)=="nil")then
+            s="nil";
+        elseif(type(v)=="boolean")then
+            if(v) then s="true"; else s="false"; end;
+        elseif(type(v)=="number")then
+            s=v;
+        elseif(type(v)=="string")then
+            s="\""..v.."\"";
+        elseif(type(v)=="table")then
+            s=dumpTab(v,ind.."  ");
+            s=string.sub(s,1,#s-1);
+        elseif(type(v)=="function")then
+            s="function : "..v;
+        elseif(type(v)=="thread")then
+            s="thread : "..tostring(v);
+        elseif(type(v)=="userdata")then
+            s="userdata : "..tostring(v);
+        else
+            s="nuknow : "..tostring(v);
+        end;--//end if
+        --//Contact
+        str=str.."\n"..ind..k..s.." ,";
+    end --//end for
+    --//return the format string
+    local sss=string.sub(str,1,#str-1);
+    if(#ind>0)then ind=string.sub(ind,1,#ind-2) end;
+    sss=sss.."\n"..ind.."}\n";
+    return sss;--string.sub(str,1,#str-1).."\n"..ind.."}\n";
+end;--//end function
+
+table.tostring = function(tablevalue, tabCount)
+    local stringtable = FormatTable(tablevalue, tabCount)
+    return stringtable
+end
+
+table.logToString = function(tablevalue, prefix, tabCount)
+    prefix = prefix or ""
+    print(prefix .. table.tostring(tablevalue, tabCount))
+end
+
+table.dump = dumpTab

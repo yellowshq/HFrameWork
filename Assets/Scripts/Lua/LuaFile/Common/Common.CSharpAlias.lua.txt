@@ -1,0 +1,77 @@
+local _csharpInstances = {}
+
+local function _getCSharpContent( key, getFunc )
+    if not _csharpInstances[key] then
+        _csharpInstances[key] = getFunc()
+    end
+    return _csharpInstances[key]
+end
+
+UnityEngine = CS.UnityEngine
+Core = CS.HFrameWork.Core
+
+local function _getTime(  )
+    return UnityEngine.Time
+end
+
+Time = function (  )
+    return _getCSharpContent("Time",_getTime)
+end
+
+local function _getGameObject(  )
+    return UnityEngine.GameObject
+end
+
+GameObject = function ()
+    return _getCSharpContent("GameObject", _getGameObject)
+end
+
+local function _getLuaManagerInstance()
+    return Core.LuaManager.Instance
+end
+
+LuaManager = function (  )
+    return _getCSharpContent("LuaManager", _getLuaManagerInstance)
+end
+
+local function _getLuaAsyncWrapperInstance()
+    return Core.LuaAsyncWrapper.Instance
+end
+
+LuaAsyncWrapper = function ()
+    return _getCSharpContent("LuaAsyncWrapper", _getLuaAsyncWrapperInstance)
+end
+
+
+local function _getMsgCenterInstance()
+    return Core.MsgCenter.Instance
+end
+
+MsgCenter = function ()
+    return _getCSharpContent("MsgCenter", _getMsgCenterInstance)
+end
+
+local function _getAssetCacheManagerInstance()
+    return Core.AssetCacheManager.Instance
+end
+
+AssetCacheManager = function()
+    return _getCSharpContent("AssetCacheManager", _getAssetCacheManagerInstance)
+end
+
+local function _getUniqueGameLoopInstance()
+    return Core.UniqueGameLoop
+end
+
+UniqueGameLoop = function()
+    return _getCSharpContent("UniqueGameLoop", _getUniqueGameLoopInstance)
+end
+
+local function _getNetManagerInstance()
+    return Core.NetManager.Instance
+end
+
+NetManager = function()
+    return _getCSharpContent("NetManager", _getNetManagerInstance)
+end
+

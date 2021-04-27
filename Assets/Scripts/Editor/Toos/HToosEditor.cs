@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -18,17 +19,39 @@ public class HToosEditor
         string protoPath = Application.dataPath + "/LuaProto/proto";
         var dirInfo = new DirectoryInfo(protoPath);
         FileInfo[] protoFiles = dirInfo.GetFiles();
+        List<string> pbNames = new List<string>(protoFiles.Length);
         foreach (var protoFile in protoFiles)
         {
             if (protoFile.FullName.EndsWith(".proto"))
             {
                 string pbFile = protoFile.FullName.Replace(".proto", ".pb.bytes").Replace("\\", "/").Replace("/LuaProto/proto", "/Scripts/Lua/LuaPb");
                 Debug.Log(pbFile);
+                pbNames.Add(Path.GetFileNameWithoutExtension(pbFile));
                 string param = string.Format("-I{0} {1} -o {2}", protoPath, protoFile, pbFile);
                 var ans = RunProcessSync(protocPath, param);
                 Debug.Log(ans);
             }
         }
+
+        string pbMapLua = Application.dataPath + "/Scripts/Lua/LuaFile/Gen/Gen.ProtoByteMap.lua.txt";
+        try
+        {
+            using (StreamWriter sw = new StreamWriter(pbMapLua))
+            {
+                sw.WriteLine("return {");
+                foreach (var _name in pbNames)
+                {
+                    sw.WriteLine("\t\""+_name+"\",");
+                }
+                sw.WriteLine("}");
+            }
+        }
+        catch(Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
+
+
         AssetDatabase.Refresh();
         AssetDatabase.SaveAssets();
     }

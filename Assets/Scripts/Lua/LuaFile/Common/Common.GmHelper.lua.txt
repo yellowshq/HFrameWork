@@ -1,0 +1,40 @@
+GmHelper = GmHelper or {}
+
+function GmHelper.AnalyzeCommand(command)
+    printw("gm command", command)
+    local cs = string.split(command," ")
+    if not cs or #cs<1 then
+        printe("gm command error", command)
+        return
+    end
+    local funStr = cs[1]
+    if funStr and funStr~="" then
+        if GmHelper[funStr] then
+            table.remove(cs,1)
+            if cs and #cs > 0 then
+                if GmHelper[funStr] then
+                    GmHelper[funStr](table.unpack(cs))
+                else
+                    GmHelper.ReqGm(funStr,cs)
+                end
+            else
+                if GmHelper[funStr] then
+                    GmHelper[funStr](nil)
+                else
+                    GmHelper.ReqGm(funStr)
+                end
+            end
+        else
+
+        end
+    end
+end
+
+--例
+function GmHelper.addHero(id,level)
+    SendMessage("Person", {Name=id,age = level or 1})
+end
+
+function GmHelper.ReqGm(cmd,params)
+    SendMessage(PbReqId.ReqGm, {cmd=cmd,params=params})
+end

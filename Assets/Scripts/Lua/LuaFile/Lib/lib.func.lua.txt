@@ -1,0 +1,11 @@
+
+function TryCatchCall( f, onError, ... )
+    local args = {...}
+    local function debugTrace()
+        print(debug.traceback( ))
+        if onError then
+            onError(table.unpack(args))
+        end
+    end
+    xpcall(f, debugTrace, ...)
+end

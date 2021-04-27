@@ -1,0 +1,48 @@
+local _M = {}
+
+local _listeners = {}
+local _index = 1
+
+
+function _M.addListener(listener,frequeue)
+    if not listener then
+        return
+    end
+    frequeue = frequeue or 1
+    for _,v in ipairs(_listeners) do
+        if v[1] == listener then
+            return
+        end
+    end
+    table.insert(_listeners,{listener,frequeue})
+end
+
+function _M.removeListener(listener)
+    local index = 1
+    for i, v in ipairs(_listeners) do
+        if v[1] == listener then
+            index = i
+            break
+        end
+    end
+    table.remove( _listeners, index )
+end
+
+function _M.removeAllListener()
+    table.clear(_listeners)
+end
+
+function _M.update()
+    for _, v in pairs(_listeners) do
+        if _index % v[2] ==0 then
+            v[1]()
+        end
+    end
+    _index = _index + 1
+end
+
+function _M.init()
+    _M.removeAllListener()
+end
+
+UpdateFunctionDispatcher = _M

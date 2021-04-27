@@ -1,0 +1,96 @@
+-- 使用了云风的Lua OO方案
+-- https://blog.codingnow.com/2006/06/oo_lua.html
+
+-- 在这个方案中，只定义了一个函数 class(super) ，用这个函数，我们就可以方便的在 lua 中定义类：
+
+-- base_type=class("base_type")       -- 定义一个基类 base_type
+
+-- function base_type:ctor(x)  -- 定义 base_type 的构造函数
+--     print("base_type ctor")
+--     self.x=x
+-- end
+
+-- function base_type:print_x()    -- 定义一个成员函数 base_type:print_x
+--     print(self.x)
+-- end
+
+-- function base_type:hello()  -- 定义另一个成员函数 base_type:hello
+--     print("hello base_type")
+-- end
+-- 以上是基本的 class 定义的语法，完全兼容 lua 的编程习惯。我增加了一个叫做 ctor 的词，作为构造函数的名字。
+
+-- 下面看看怎样继承： test=class("test", basetype) -- 定义一个类 test 继承于 basetype
+
+-- function test:ctor()    -- 定义 test 的构造函数
+--     print("test ctor")
+-- end
+
+-- function test:hello()   -- 重载 base_type:hello 为 test:hello
+--     print("hello test")
+-- end
+-- 现在可以试一下了：
+
+-- a=test.new(1)   -- 输出两行，base_type ctor 和 test ctor 。这个对象被正确的构造了。
+-- a:print_x() -- 输出 1 ，这个是基类 base_type 中的成员函数。
+-- a:hello()   -- 输出 hello test ，这个函数被重载了。
+-- 其实，实现多重继承也并不复杂，这里就不再展开了。更有意义的扩展可能是增加一个 dtor :)
+
+-- ps. 这里用了点小技巧，将 self 绑定到 closure 上，所以并不使用 a:hello 而是直接用 a.hello 调用成员函数。这个技巧并不非常有用，从效率角度上说，还是不用为好。
+local _class={}
+ 
+-- 在云风的基础上添加了类名方便查询
+function class(name, super)
+	local class_type={}
+	class_type.ctor=false
+	class_type.name=name
+	class_type.super=super
+	--可以从既有table当中进行修改得到新的对象
+	class_type.newByTable=function(obj, ...)
+		for k,v in pairs(obj) do
+			obj[k] = nil
+		end
+		do
+			local create
+			create = function(c,...)
+				if c.super then
+					create(c.super,...)
+				end
+				if c.ctor then
+					c.ctor(obj,...)
+				end
+			end
+
+			create(class_type,...)
+		end
+		setmetatable(obj,{ __index=_class[class_type] })
+		obj.classType = class_type --设置了obj的type
+		obj.typeName = name --方便查询
+		return obj
+	end
+
+	class_type.new=function(...) 
+			local obj={}
+			return class_type.newByTable(obj, ...)
+		end
+
+	local vtbl={}
+	_class[class_type]=vtbl
+ 
+	setmetatable(class_type,{__newindex=
+		function(t,k,v)
+			vtbl[k]=v
+		end
+	})
+ 
+	if super then
+		setmetatable(vtbl,{__index=
+			function(t,k)
+				local ret=_class[super][k]
+				vtbl[k]=ret
+				return ret
+			end
+		})
+	end
+ 
+	return class_type
+end

@@ -182,5 +182,11 @@ public class LoadAssets : MonoBehaviour
             NetManager.Instance.Connect();
         }
 
+        if (GUI.Button(new Rect(200, 360, 100, 60), "SendMsg"))
+        {
+            string str = "Hello Unity";
+            byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
+            NetManager.Instance.SendMsg(1, bytes);
+        }
     }
 }

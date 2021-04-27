@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HFrameWork.Core
 {
-    public class Message
+    public struct Message
     {
         private int ID;
         private int DataLen;

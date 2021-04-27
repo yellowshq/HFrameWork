@@ -1,0 +1,366 @@
+require 'lib.class'
+Set = class("Set")
+
+function Set:ctor(...)
+	self._set = {}
+	if {...} then
+		for i, v in ipairs({...}) do
+			local added = false
+			for si, sv in ipairs(self._set) do
+				if element == v then
+					added = true
+					break
+				end
+			end
+			if added == false then
+				table.insert(self._set, element)
+			end
+		end
+	end
+	
+end
+
+function Set:add(element)
+	for i, v in ipairs(self._set) do
+		if element == v then
+			return
+		end
+	end
+	table.insert(self._set, element)
+end
+
+function Set:remove(element)
+	local removeKey = nil
+	for i, v in ipairs(self._set) do
+		if v == element then
+			removeKey = i
+		end
+	end
+	if removeKey then
+		table.remove(self._set, removeKey)
+	end
+end
+
+function Set:contains( element )
+	for i, v in ipairs(self._set) do
+		if v == element then
+			return true
+		end
+	end
+	return false
+end
+
+function Set:foreach(func, owner)
+	if not func then
+		return
+	end
+	for i, v in ipairs(self._set) do
+		if owner then
+			func(owner, v)
+		else
+			func(v)
+		end
+	end
+end
+
+Stack = class("Stack")
+
+function Stack:ctor()
+	self.stack_table = {}
+end
+
+function Stack:push(element)
+	local size = self:size()
+	self.stack_table[size + 1] = element
+end
+
+function Stack:pop()
+	local size = self:size()
+	if self:isEmpty() then
+	if __debugLog then printw("Stack is empty!") end
+		return
+	end
+	return table.remove(self.stack_table, size)
+end
+
+function Stack:top()
+	local size = self:size()
+	if self:isEmpty() then
+	if __debugLog then printw("Stack is empty!") end
+		return
+	end
+	return self.stack_table[size]
+end
+
+function Stack:isEmpty()
+	local size = self:size()
+	if size == 0 then
+		return true
+	end
+	return false
+end
+
+function Stack:size()
+	return #self.stack_table or 0
+end
+
+function Stack:clear()
+	self.stack_table = nil
+	self.stack_table = {}
+end
+
+function Stack:isIdExist(id)
+	local hasId = table.find(self.stack_table, function ( item )
+		return item.id == id
+	end)
+	if hasId then
+		return true
+	else
+		return false
+	end 
+end
+
+function Stack:Exist(checkFunc)
+	return table.find(self.stack_table, function (item)
+		return checkFunc(item)
+	end)
+end
+
+function Stack:printElement()
+	local size = self:size()
+	
+	if self:isEmpty() then
+	if __debugLog then printw("Stack is empty!") end
+		return
+	end
+	
+	local str = "{" .. self.stack_table[size]
+	size = size - 1
+	while size > 0 do
+		str = str .. ", " .. self.stack_table[size]
+		size = size - 1
+	end
+	str = str .. "}"
+	if __debugLog then print(str) end
+end
+
+Queue = class("Queue")
+
+function Queue:ctor(capacity)
+	self.capacity = capacity or 64 
+	self.queue = {}
+	self.size_ = 0
+	self.head = - 1
+	self.rear = - 1
+end
+
+function Queue:enQueue(element)
+	if self.size_ == 0 then
+		self.head = 0
+		self.rear = 1
+		self.size_ = 1
+		self.queue[self.rear] = element
+	else
+		local temp =(self.rear + 1) % self.capacity
+		if temp == self.head then
+			self.capacity = self.capacity * 2
+		end
+		self.rear = temp
+		
+		self.queue[self.rear] = element
+		self.size_ = self.size_ + 1
+	end
+	
+end
+
+function Queue:deQueue()
+	if self:isEmpty() then
+		return
+	end
+	self.size_ = self.size_ - 1
+	self.head =(self.head + 1) % self.capacity
+	local value = self.queue[self.head]
+	return value
+end
+
+function Queue:clear()
+	self.queue = nil
+	self.queue = {}
+	self.size_ = 0
+	self.head = - 1
+	self.rear = - 1
+end
+
+function Queue:enQueueRange( array )
+	self:clear()
+	for i,v in ipairs(array) do
+		self:enQueue(v)
+	end
+end
+
+function Queue:getTail(  )
+	if self.queue and self.rear then
+		return self.queue[self.rear]
+	end
+end
+
+function Queue:getHead(  )
+	if self:isEmpty() then
+	if __debugLog then print("Error: The Queue is empty.") end
+		return
+	end
+	local value = self.queue[self.head + 1]
+	return value
+end
+
+
+function Queue:isEmpty()
+	if self:size() == 0 then
+		return true
+	end
+	return false
+end
+
+function Queue:size()
+	return self.size_
+end
+
+function Queue:printElement()
+	local h = self.head
+	local r = self.rear
+	local str = nil
+	local first_flag = true
+	while h ~= r do
+		if first_flag == true then
+			str = "{" .. self.queue[h]
+			h =(h + 1) % self.capacity
+			first_flag = false
+		else
+			str = str .. "," .. self.queue[h]
+			h =(h + 1) % self.capacity
+		end
+	end
+	str = str .. "," .. self.queue[r] .. "}"
+	if __debugLog then print(str) end
+end
+
+RecycleTable = class("RecycleTable")
+
+function RecycleTable:ctor( )
+	self._table = {}
+	self._active = false
+end
+
+function RecycleTable:isActive( )
+	return self._active
+end
+
+
+function RecycleTable:_clear( )
+	for k,v in pairs(self._table) do
+		self._table[k] = nil
+	end
+end
+
+function RecycleTable:get(  )
+	if self._active then
+		return
+	end
+
+	self:_clear()
+	self._active = true
+	return self._table
+end
+
+function RecycleTable:release( t )
+	if t ~= self._table then
+		return
+	end
+	self:_clear()
+	self._active = false
+	return true
+end
+
+function RecycleTable:isThis( t )
+	return t == self._table
+end
+
+RecycleTablePool = class("RecycleTablePool")
+
+function RecycleTablePool:ctor( )
+	self._pool = {}
+end
+
+function RecycleTablePool:getTable( )
+	for i,v in ipairs(self._pool) do
+		if not v:isActive() then
+			return v:get()
+		end
+	end
+	local newTable = RecycleTable.new()
+	table.insert( self._pool, newTable )
+	return newTable:get()
+end
+
+function RecycleTablePool:releaseTable( t )
+	for i,v in ipairs(self._pool) do
+		if v:release(t) then
+			return
+		end
+	end
+end
+
+Cycle = class("Cycle")
+
+function Cycle:ctor()
+    self.cycle = {}
+end
+
+function Cycle:add( element )
+    table.insert( self.cycle, element )
+    return self.cycle
+end
+
+function Cycle:remove( index )
+    if self:isEmpty() then
+        return
+    end
+    table.remove( self.cycle, index )
+    return self.cycle
+end
+
+function Cycle:pushCycle( element)
+    if self:isEmpty() then
+        return
+    end
+    local size = self:size()
+    table.remove( self.cycle, size )
+    local newCycle = mergeArray(element, self.cycle)
+    self.cycle = newCycle
+    return self.cycle
+end
+
+function Cycle:popCycle( element)
+    if self:isEmpty() then
+        return
+    end
+    local size = self:size()
+    table.remove( self.cycle, 1)
+    table.insert( self.cycle, size, element)
+    return self.cycle    
+end
+
+function Cycle:size(  )
+    return #self.cycle or 0 
+end
+
+function Cycle:Clean( )
+    self.cycle = {}
+end
+
+function Cycle:isEmpty(  )
+    if self:size() == 0 then
+        return true
+    end
+    return false
+end

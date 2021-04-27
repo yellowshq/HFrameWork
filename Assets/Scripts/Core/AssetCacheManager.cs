@@ -300,6 +300,12 @@ namespace HFrameWork.Core
             return null;
         }
 
+        public bool HasCached(string fileName,string groupName)
+        {
+            var cacheItem = GetCache(fileName, groupName);
+            return cacheItem != null;
+        }
+
         public T LoadAsset<T>(string key,string groupName="") where T :UnityEngine.Object
         {
             var cacheItem = GetCache(key, groupName);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using XLua;
 using XLua.LuaDLL;
@@ -22,12 +23,29 @@ namespace HFrameWork.Core
         {
             luaEnv = new LuaEnv();
 
+#if UNITY_EDITOR
+            var dir = Directory.GetCurrentDirectory();
+            if (File.Exists(dir + "/emmy_core.dll"))
+            {
+                luaEnv.DoString("local dbg = require('emmy_core') dbg.tcpListen('localhost', 9966)" +
+                              "print('启动lua')");
+            }
+#endif
             luaEnv.AddBuildin("pb", Lua.LoadPB);
             luaEnv.AddBuildin("pb.io", Lua.LoadPB_IO);
             luaEnv.AddBuildin("pb.conv", Lua.LoadPB_CONV);
             luaEnv.AddBuildin("pb.buffer", Lua.LoadPB_BUFFER);
             luaEnv.AddBuildin("pb.slice", Lua.LoadPB_SLICE);
             luaEnv.AddBuildin("rapidjson", Lua.LoadRapidJson);
+
+            luaEnv.AddLoader(CustomLoaderMethod);
+        }
+
+        private byte[] CustomLoaderMethod(ref string fileName)
+        {
+            fileName = $"{fileName}.lua";
+
+            return readFile(fileName);
         }
 
         private void Start()
@@ -120,13 +138,55 @@ namespace HFrameWork.Core
 
         private void OnDestroy()
         {
-            luaEnv.Dispose();
+            if (luaEnv!=null)
+            {
+                UniqueGameLoop.ClearAll();
+                CSharpWrapper.Instance.Clear();
+                luaEnv.DoString("require 'Utils.CheckRef_CSharp'");
+                luaEnv.Dispose();
+                luaEnv = null;
+            }
+        }
+
+        public object DoString(string command)
+        {
+            return luaEnv.DoString(command);
+        }
+
+        public static object CallGlobalFunction(string command,params object[] args)
+        {
+            if (Instance.luaEnv == null)
+            {
+                return null;
+            }
+            var g = Instance.luaEnv.Global;
+            var func = g.Get<Func<object[], object>>(command);
+            if (func == null)
+            {
+                return null;
+            }
+            object ret = func(args);
+            func = null;
+            return ret;
+        }
+
+        public static T GetFunc<T>(string funcName)
+        {
+            var g = Instance.luaEnv.Global;
+            var func = g.Get<T>(funcName);
+            return func;
+        }
+
+        public bool CheckRequire(string requireName)
+        {
+            string fileName = $"{requireName}.lua";
+            return AssetCacheManager.Instance.HasCached(fileName, "public");
         }
 
         public void LaunchGame()
         {
             LuaTable scriptTable = Instance.NewTable(false);
-            Instance.LoadFile(scriptTable, "testPb.lua", (hasLua, objs) => {
+            Instance.LoadFile(scriptTable, "Core.Launcher.lua", (hasLua, objs) => {
                 if (hasLua)
                 {
                     Action action = scriptTable.Get<Action>("DoInit");

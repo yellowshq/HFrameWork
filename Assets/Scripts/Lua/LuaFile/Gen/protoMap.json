@@ -1,9 +1,1 @@
-{
-  "protoMaps" : [
-    {
-      "msgID": "100001",
-      "msgName": "Person",
-      "pkgName": "test"
-    }
-  ]
-}
+{"protoMaps": [{"msgID": 100001, "msgName": "Person", "pkgName": "Test"}]}

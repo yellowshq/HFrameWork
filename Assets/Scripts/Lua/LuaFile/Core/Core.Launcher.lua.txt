@@ -1,0 +1,50 @@
+require("Common.Requirement")
+
+local function initGlobal()
+
+end
+
+local function initConfig()
+
+end
+
+local function initPbFiles()
+    local pb=require("pb")
+    local protos = require("Gen.ProtoByteMap")
+    for _, proto in pairs(protos) do
+        local pbFile = AssetCacheManager():LoadPbFile(proto)
+        pb.load(pbFile)
+    end
+end
+
+local function initNetwork()
+    require("Common.UpdateFunctionDispatcher")
+    UpdateFunctionDispatcher.init()
+    UniqueGameLoop().AddListener(UpdateFunctionDispatcher.update,1)
+
+    -- UpdateFunctionDispatcher.addListener()
+end
+
+local function initMsgCenter()
+
+end
+
+local function initUIFrame()
+
+end    
+
+function DoInit()
+    printe("Launcher DonInit")
+    --1.初始化全局方法变量
+    initGlobal()
+    --2.初始化配置表
+    initConfig()
+    --3.初始化Pb
+    initPbFiles()
+    --4.初始网络
+    initNetwork()
+    --5.初始化消息系统
+    initMsgCenter()
+    --6.初始化UI
+    initUIFrame()
+end

@@ -1,0 +1,11 @@
+local ProtobufMsgManager = require("Core.ProtobufMsgManager")
+
+function MsgHandler(proto,message)
+    ProtobufMsgManager.onReceiveMsg(proto,message)
+end
+
+function GMCommand(args)
+    require("Common.GmHelper")
+    local command = args[0]
+    GmHelper.AnalyzeCommand(command)
+end

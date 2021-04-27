@@ -67,6 +67,9 @@ public static class XLuaTagConfig
                 typeof(HFrameWork.Core.LuaManager),
                 typeof(HFrameWork.Core.AssetCacheManager),
                 typeof(HFrameWork.Core.SceneManager),
+                typeof(HFrameWork.Core.LuaAsyncWrapper),
+                typeof(HFrameWork.Core.MsgCenter),
+                typeof(HFrameWork.Core.UniqueGameLoop),
         };
         }
     }
@@ -97,6 +100,7 @@ public static class XLuaTagConfig
                 typeof(Playable),
                 typeof(DirectorWrapMode),
                 typeof(DirectorUpdateMode),
+                typeof(HFrameWork.Core.ProtoMap),
             };
         }
     }
@@ -132,6 +136,7 @@ public static class XLuaTagConfig
                 typeof(Func<object[], object>),
                 typeof(System.Func<LuaTable, string, GameObject, LuaTable>),
                 typeof(System.Action<Vector3[]>),
+                typeof(HFrameWork.Core.MsgHandlerDelegate),
             };
         }
     }

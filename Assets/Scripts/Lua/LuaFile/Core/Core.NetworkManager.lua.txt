@@ -1,0 +1,5 @@
+local ProtobufMsgManager = require("Core.ProtobufMsgManager")
+
+function SendMessage(msgName,req)
+    ProtobufMsgManager.onSendMsg(msgName,req)
+end

@@ -40,13 +40,14 @@ def genProtoMap(file,targetPath) :
                                 msgName = msgName.replace("{",'').strip()
                                 pbDict[id] = msgName
                                 item = {}
-                                item["msgID"] = id
+                                item["msgID"] = int(id)
                                 item["msgName"] = msgName
                                 item["pkgName"] = fileName
                                 jsonList.append(item)
                     f.close()
-
-        str_json = json.dumps(jsonList)
+        jsonPBDict = {}
+        jsonPBDict["protoMaps"] = jsonList
+        str_json = json.dumps(jsonPBDict)
         writGenProtoMapFile(str_json,targetPath)
         # 遍历所有的文件夹 暂时不做处理
         # for d in dirs:

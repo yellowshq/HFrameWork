@@ -1,0 +1,371 @@
+string.isNullConfigStr = function (str)
+    return not str or str == "" or str == "-1"
+end
+
+string.isNullOrEmpty = function ( str )
+    return not str or str == ""
+end
+
+
+function string.secondToString(senond)
+	local nums = senond
+	local hour=math.floor(nums/3600)
+	nums = nums -hour*3600
+	local min = math.floor(nums/60)
+	nums = nums - min*60
+	local hourstr = hour > 10 and tostring(hour) or "0"..tostring(hour)
+	local minstr = min > 10 and tostring(min) or "0"..tostring(min)
+	local secondstr = nums > 10 and tostring(nums) or "0"..tostring(nums)
+	return string.format("%s:%s:%s",hourstr,minstr,secondstr )
+end
+
+local find = string.find
+string.lastIndexOf = function (haystack, needle)
+    local i, j
+    local k = 0
+    repeat
+        i = j
+        j, k = find(haystack, needle, k + 1, true)
+    until j == nil
+
+    return i
+end
+
+
+local unpack = unpack or table.unpack
+
+local function split(split_string, pattern, search_pos_begin)
+	assert(type(split_string) == "string")
+	assert(type(pattern) == "string" and #pattern > 0)
+	search_pos_begin = search_pos_begin or 1
+	local split_result = {}
+	local idx=0
+	while true do
+		local find_pos_begin, find_pos_end = string.find(split_string, pattern, search_pos_begin, true)
+		if not find_pos_begin then
+			break
+		end
+		local cur_str = ""
+		if find_pos_begin > search_pos_begin then
+			cur_str = string.sub(split_string, search_pos_begin, find_pos_begin - 1)
+		end
+		split_result[idx] = cur_str
+		search_pos_begin = find_pos_end + 1
+		idx=idx+1
+	end
+
+	if search_pos_begin < string.len(split_string) then
+		split_result[idx] = string.sub(split_string, search_pos_begin)
+		idx=idx+1
+	elseif search_pos_begin == string.len(split_string) then
+	    split_result[idx]=string.sub(split_string, search_pos_begin)
+		idx=idx+1
+	end
+	return split_result, idx
+end
+
+local function join(join_table, joiner)
+	if #join_table == 0 then
+		return ""
+	end
+
+	local fmt = "%s"
+	for i = 2, #join_table do
+		fmt = fmt .. joiner .. "%s"
+	end
+
+	return string.format(fmt, unpack(join_table))
+end
+
+local function contains(target_string, pattern)
+	local find_pos_begin, find_pos_end = string.find(target_string, pattern, 1, true)
+	return find_pos_begin ~= nil
+end
+
+local function startswith(target_string, start_pattern)
+	local find_pos_begin, find_pos_end = string.find(target_string, start_pattern, 1, true)
+	return find_pos_begin == 1
+end
+
+local function endswith(target_string, start_pattern)
+	local find_pos_begin, find_pos_end = string.find(target_string, start_pattern, -#start_pattern, true)
+	return find_pos_end == #target_string
+end
+
+local function formatCalc(formatStr, ...)
+	local str = string.format(formatStr, ...)
+	local cStr = string.gsub(str, "{(%d+)([%+%-%*%/])(%d+)}", function(l,cal,r)
+		if cal == "+" then
+			return tonumber(l)+tonumber(r)
+		elseif cal == "-" then
+			return tonumber(l)-tonumber(r)
+		elseif cal == "*" then
+			return tonumber(l)*tonumber(r)
+		elseif cal == "/" then
+			return tonumber(l)/tonumber(r)
+		end
+	end)
+	return cStr
+end
+
+local function widthSingle(inputstr)
+   local lenInByte = #inputstr
+   local width = 0
+   local i = 1
+   while (i<=lenInByte) 
+    do
+        local curByte = string.byte(inputstr, i)
+        local byteCount = 1;
+        if curByte>0 and curByte<=127 then
+            byteCount = 1                                           --1字节字符
+        elseif curByte>=192 and curByte<223 then
+            byteCount = 2                                           --双字节字符
+        elseif curByte>=224 and curByte<239 then
+            byteCount = 3                                           --汉字
+        elseif curByte>=240 and curByte<=247 then
+            byteCount = 4                                           --4字节字符
+        end
+        i = i + byteCount                                 -- 重置下一字节的索引
+        width = width + 1                                 -- 字符的个数（长度）
+    end
+    return width
+end
+
+-- 计算 UTF8 字符串的长度，每一个中文算一个字符
+local function utf8len(input)
+    local len  = string.len(input)
+    local left = len
+    local cnt  = 0
+    local arr  = {0, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc}
+    while left ~= 0 do
+        local tmp = string.byte(input, -left)
+        local i   = #arr
+        while arr[i] do
+            if tmp >= arr[i] then
+                left = left - i
+                break
+            end
+            i = i - 1
+        end
+        cnt = cnt + 1
+    end
+    return cnt
+end
+
+string.utf8len = utf8len
+string.split = split
+string.join = join
+string.contains = contains
+string.startswith = startswith
+string.endswith = endswith
+string.formatCalc = formatCalc
+string.widthSingle = widthSingle
+
+
+--[[--
+用指定字符或字符串分割输入字符串，返回包含分割结果的数组
+local input = "Hello,World"
+local res = string.split(input, ",")
+-- res = {"Hello", "World"}
+
+local input = "Hello-+-World-+-Quick"
+local res = string.split(input, "-+-")
+-- res = {"Hello", "World", "Quick"}
+
+@param string input 输入字符串
+@param string delimiter 分割标记字符或字符串
+@return array 包含分割结果的数组
+]]
+function string.split(input, delimiter)
+	input = tostring(input)
+	delimiter = tostring(delimiter)
+	if (delimiter=='') then return false end
+	local pos,arr = 0, {}for st,sp in function() return string.find(input, delimiter, pos, true) end do
+		table.insert(arr, string.sub(input, pos, st - 1))
+		pos = sp + 1
+	end
+	table.insert(arr, string.sub(input, pos))
+	return arr
+end
+
+--[[--
+去除输入字符串头部的空白字符，返回结果
+local input = "  ABC"
+print(string.ltrim(input))
+-- res ABC，输入字符串前面的两个空格被去掉了
+
+空白字符包括：
+-   空格
+-   制表符 \t
+-   换行符 \n
+-   回到行首符 \r
+@param string input 输入字符串
+@return string 结果
+@see string.rtrim, string.trim
+]]
+function string.ltrim(input)
+	return string.gsub(input, "^[ \t\n\r]+", "")
+end
+--[[--
+去除输入字符串尾部的空白字符，返回结果
+local input = "ABC  "
+print(string.ltrim(input))
+-- res ABC，输入字符串最后的两个空格被去掉了
+@param string input 输入字符串
+@return string 结果
+@see string.ltrim, string.trim
+
+]]
+function string.rtrim(input)
+	return string.gsub(input, "[ \t\n\r]+$", "")
+end
+--[[--
+去掉字符串首尾的空白字符，返回结果
+@param string input 输入字符串
+@return string 结果
+@see string.ltrim, string.rtrim
+]]
+function string.trim(input)
+	input = string.gsub(input, "^[ \t\n\r]+", "")
+	return string.gsub(input, "[ \t\n\r]+$", "")
+end
+
+--[[--
+将字符串的第一个字符转为大写，返回结果
+local input = "hello"
+print(string.ucfirst(input))
+-- res Hello
+@param string input 输入字符串
+@return string 结果
+]]
+function string.ucfirst(input)
+	return string.upper(string.sub(input, 1, 1)) .. string.sub(input, 2)
+end--[[--
+计算 UTF8 字符串的长度，每一个中文算一个字符
+local input = "你好World"
+print(string.utf8len(input))
+-- res 7
+@param string input 输入字符串
+@return integer 长度
+]]
+function string.utf8len(input)
+	local len  = string.len(input)
+	local left = len
+	local cnt  = 0
+	local arr  = {0, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc}
+	while left ~= 0 do
+		local tmp = string.byte(input, -left)
+		local i   = #arr
+		while arr[i] do
+			if tmp >= arr[i] then
+				left = left - i
+				break
+			end
+			i = i - 1
+		end
+		cnt = cnt + 1
+	end
+	return cnt
+end
+
+----过滤出规范字符 只保留汉字、数字、字符
+function string.filterSpecChars(s)
+	local ss = {}
+	local k = 1
+	while true do
+		if k > #s then break end
+		local c = string.byte(s,k)
+		if not c then break end
+		if c<192 then
+			if (c>=48 and c<=57) or (c>= 65 and c<=90) or (c>=97 and c<=122) then
+				table.insert(ss, string.char(c))
+			end
+			k = k + 1
+		elseif c<224 then
+			k = k + 2
+		elseif c<240 then
+			if c>=228 and c<=233 then
+				local c1 = string.byte(s,k+1)
+				local c2 = string.byte(s,k+2)
+				if c1 and c2 then
+					local a1,a2,a3,a4 = 128,191,128,191
+					if c == 228 then a1 = 184
+					elseif c == 233 then
+						a2,a4 = 190,c1 ~= 190 and 191 or 165
+					end
+					if c1>=a1 and c1<=a2 and c2>=a3 and c2<=a4 then
+						table.insert(ss, string.char(c,c1,c2))
+					end
+				end
+			end
+			k = k + 3
+		elseif c<248 then
+			k = k + 4
+		elseif c<252 then
+			k = k + 5
+		elseif c<254 then
+			k = k + 6
+		end
+	end
+	return table.concat(ss)
+end
+
+
+--[[--
+将数值格式化为包含千分位分隔符的字符串
+print(string.formatnumberthousands(1924235))
+-- 输出 1,924,235
+
+@param number num 数值
+@return string 格式化结果
+]]
+function string.formatnumberthousands(num)
+	local formatted = tostring(num)
+	local k
+	while true do
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		if k == 0 then break end
+	end
+	return formatted
+end
+-- 判断utf8字符byte长度
+-- 0xxxxxxx - 1 byte
+-- 110yxxxx - 192, 2 byte
+-- 1110yyyy - 225, 3 byte
+-- 11110zzz - 240, 4 byte
+local function chsize(char)
+	if not char then
+		print("not char")
+		return 0
+	elseif char > 240 then
+		return 4
+	elseif char > 225 then
+		return 3
+	elseif char > 192 then
+		return 2
+	else
+		return 1
+	end
+end
+
+-- 截取utf8 字符串
+-- str:         要截取的字符串
+-- startChar:   开始字符下标,从1开始
+-- numChars:    要截取的字符长度
+function string.utf8sub(str, startChar, numChars)
+	local startIndex = 1
+	while startChar > 1 do
+		local char = string.byte(str, startIndex)
+		startIndex = startIndex + chsize(char)
+		startChar = startChar - 1
+	end
+
+	local currentIndex = startIndex
+
+	while numChars > 0 and currentIndex <= #str do
+		local char = string.byte(str, currentIndex)
+		currentIndex = currentIndex + chsize(char)
+		numChars = numChars -1
+	end
+	return str:sub(startIndex, currentIndex - 1)
+end

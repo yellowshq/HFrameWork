@@ -1,0 +1,4 @@
+local _mapping = {
+ 
+"Achievement","ArtSkillConf","Assist","AssistDialog","AssistOption","AssistRole","Attribute","Avatar","AvatarBox","BackgroundMail","Boss","Buff","Campaign","CampRelation","Chapter","ChapterBox","Constant","CustomWords_cn","DailyDungeon","Drop","Equipment","Exclusive","Expedition","ExpeditionBuffCard","ExpeditionRankRewards","ExpeditionTalk","FactionName","FightPower","Gacha","GachaBoxReward","halo","Hero","HeroBase","HeroStar","HeroUpgrade","InfiniteTower","Item","ItemBase","Language_cn","Language_en","LanguageContent","Level","Localize_cn","LoseRoute","MainStage","plotDialogue","PrefightDialogue","Price","Push","Resource","Shop","Skill","State","Task","TaskType","Tavern","Title","UIOpenBase","Vip"}
+return _mapping

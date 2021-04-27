@@ -1,0 +1,202 @@
+table.clear = function ( t )
+    if not t then
+        return
+    end
+    for k,_ in pairs(t) do
+        t[k] = nil
+    end
+    
+end
+
+table.equals = function (t1, t2)
+    if not t1 and not t2 then
+        return true
+    end
+    if not (t1 and t2) then
+        return false
+    end
+    for k, v in pairs(t1) do
+        if t2[k] ~= v then
+            return false
+        end
+    end
+    return true
+end
+
+table.reverseToNew = function (t)
+    if not t then
+        return
+    end
+    local ret = {}
+    local len = #t
+    for i = 1, len do
+        ret[i] = t[len + 1 - i]
+    end
+    return ret
+end
+
+table.copy = function ( t )
+    if not t then
+        return nil
+    end
+    local ret = {}
+    for k,v in pairs(t) do
+        ret[k] = v
+    end
+    return ret
+end
+
+table.arrayEmpty = function(t)
+    return not t or #t == 0
+end
+
+table.mapEmpty = function(t)
+    return not t or table.kLength(t) == 0
+end
+
+table.indexOf = function ( t, element )
+    if not t then
+        return -1
+    end
+    for k,v in pairs(t) do
+        if v == element then
+            return k
+        end
+    end
+    return -1
+end
+
+table.contains = function ( t, element )
+    if not t then
+        return false
+    end
+    if not element then
+        error("table.contains应当传入元素")
+        return false
+    end
+    for _, v in pairs(t) do
+        if v == element then
+            return true
+        end
+    end
+    return false
+end
+
+table.insertToLast = function ( t, element  )
+    assert(t and type(t) == "table", "参数应该存在")
+    assert(element, "参数应该存在")
+    local ret = {}
+    for _, value in ipairs(t) do
+        if value ~= element then
+            table.insert(ret, value)
+        end
+    end
+    table.insert(ret, element)
+    return ret
+end
+
+table.uniqueInsert = function (t, element)
+    assert(t and type(t) == "table", "参数应该存在")
+    if table.contains(t, element) then
+        return
+    end
+    table.insert(t, element)
+end
+
+table.mergeTo = function ( dst, ...  )
+    local srcs = {...}
+    if not srcs then
+        return dst
+    end
+    assert(dst, "目标table为空")
+
+    for _, src in ipairs(srcs) do
+        for _, v in ipairs(src) do
+            table.insert(dst,v)
+        end
+    end
+end
+
+table.mergeSameKey = function ( dst, ...  )
+    local srcs = {...}
+    if not srcs then
+        return dst
+    end
+    assert(dst, "目标table为空")
+    for _, src in ipairs(srcs) do
+        for _, v in ipairs(src) do
+            local hasSame = false
+            for k,dstv in ipairs(dst) do
+                if dstv.key == v.key then
+                    dstv.value = v.value + dstv.value
+                    hasSame = true
+                end
+            end
+            if hasSame == false then
+                table.insert(dst,v)
+            end
+        end
+    end
+end
+
+table.removeElement = function (t, e)
+    if not t then
+        return
+    end
+    assert(type(t)=="table", "必须传入table")
+    local removeIndex
+    for index, value in ipairs(t) do
+        if value == e then
+            removeIndex = index
+            break
+        end
+    end
+    if removeIndex then
+        table.remove(t, removeIndex)
+    end
+end
+
+local function elementInTable( srcTable, checkFunc)
+    if not checkFunc then
+        return 
+    end
+    -- table.printv(srcTable)
+    if not srcTable then
+        prints("srcTable is nil!")
+        -- printw(debug.traceback())
+        return
+    end
+    for k, v in pairs( srcTable ) do
+        if checkFunc(v, k) == true then
+            return {
+                index = k,
+                element = v
+            }
+        end
+    end
+    return 
+end
+
+table.first = elementInTable
+
+table.find = function(t, checkFunc)
+    if not t then
+        return nil
+    end
+    local result = table.first(t, checkFunc)
+    if result then
+        return result.element
+    end
+    return nil
+end
+
+table.kLength = function (t)
+    if not t then
+        return 0
+    end
+    local count = 0
+    for k,v in pairs(t) do
+        count = count+1
+    end
+    return count
+end

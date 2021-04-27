@@ -1,0 +1,9 @@
+require("Common.Requirement")
+
+local function onHandler(data)
+    table.logToString(data)
+end
+
+return {
+    onHandler = onHandler
+}

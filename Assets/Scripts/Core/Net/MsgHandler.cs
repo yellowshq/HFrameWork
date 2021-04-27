@@ -8,7 +8,7 @@ namespace HFrameWork.Core
     {
         public void PersonHandler(byte[] data)
         {
-            Logger.LogInfo(System.Text.Encoding.UTF8.GetString(data));
+            //Logger.LogInfo(System.Text.Encoding.UTF8.GetString(data));
         }
     }
 }

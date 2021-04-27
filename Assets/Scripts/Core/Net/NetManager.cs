@@ -28,11 +28,25 @@ namespace HFrameWork.Core
     }
 
     [System.Serializable]
-    public class ProtoMap
+    public struct ProtoMap : ISerializationCallbackReceiver
     {
         public int msgID;
         public string msgName;
         public string pkgName;
+        public string msgType;
+
+        public void OnAfterDeserialize()
+        {
+            if (!string.IsNullOrEmpty(msgName) && !string.IsNullOrEmpty(pkgName))
+            {
+                msgType = string.Format("{0}.{1}", pkgName, msgName);
+            }
+        }
+
+        public void OnBeforeSerialize()
+        {
+            
+        }
     }
     [System.Serializable]
     public class ProtoMapArray: ISerializationCallbackReceiver
@@ -40,17 +54,30 @@ namespace HFrameWork.Core
         public List<ProtoMap> protoMaps;
         public Dictionary<int, ProtoMap> keyValues;
 
+        /// <summary>
+        /// 通过协议名字得到协议数据
+        /// </summary>
+        public Dictionary<string, ProtoMap> protoNameMaps;
+
         public void OnAfterDeserialize()
         {
             if (keyValues == null)
             {
                 keyValues = new Dictionary<int, ProtoMap>();
             }
+            if (protoNameMaps == null)
+            {
+                protoNameMaps = new Dictionary<string, ProtoMap>();
+            }
             foreach (var item in protoMaps)
             {
                 if (!keyValues.ContainsKey(item.msgID))
                 {
                     keyValues.Add(item.msgID, item);
+                }
+                if (!protoNameMaps.ContainsKey(item.msgName))
+                {
+                    protoNameMaps.Add(item.msgName, item);
                 }
             }
         }
@@ -64,6 +91,8 @@ namespace HFrameWork.Core
     {
 
         private Dictionary<int, ProtoMap> protoMaps;
+        private Dictionary<string, ProtoMap> protoNameMaps;
+
 
         protected override void Init()
         {
@@ -78,6 +107,7 @@ namespace HFrameWork.Core
             Debug.Log(protoMap.text);
             ProtoMapArray proto = JsonUtility.FromJson<ProtoMapArray>(protoMap.text);
             protoMaps = proto.keyValues;
+            protoNameMaps = proto.protoNameMaps;
             MsgDistribution.ProtoMaps = protoMaps;
         }
 
@@ -152,9 +182,6 @@ namespace HFrameWork.Core
         {
             try
             {
-                string str = "Hello Unity";
-                byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
-                SendMsg(1, bytes);
                 socket.BeginReceive(readBuff, buffCount, BUFFER_SIZE-buffCount, SocketFlags.None, OnReceive, readBuff);
             }catch(Exception e)
             {
@@ -179,7 +206,25 @@ namespace HFrameWork.Core
             }
         }
 
+        public ProtoMap GetMsgProto(string msgName)
+        {
+            if (protoNameMaps.ContainsKey(msgName))
+            {
+               return protoNameMaps[msgName];
+            }
+            Logger.LogError("protoNameMaps中没有对应的msgName " + msgName);
+            return default;
+        }
 
+        public void SendMsg(string msgName,byte[] data)
+        {
+            ProtoMap proto = GetMsgProto(msgName);
+            if (proto.msgID != 0)
+            {
+                int id = proto.msgID;
+                SendMsg(id, data);
+            }
+        }
 
         public void SendMsg(int id,byte[] data)
         {

@@ -1,0 +1,41 @@
+local pb = require "pb"
+
+local _M = {
+    msgTypes = {}
+}
+
+function _M.onReceiveMsg(proto,message)
+    local recvData = _M.decodeMsg(proto.msgType,message:GetData())
+    local handlerName = _M.msgTypes[proto.msgName]
+    if not handlerName then
+        handlerName = "MsgHandler."..proto.msgName
+        _M.msgTypes[proto.msgName] = handlerName
+    end
+    local checkResult = LuaManager():CheckRequire(handlerName)
+    if checkResult then
+        local handler = require(handlerName)
+        if handler.onHandler then
+            handler.onHandler(recvData)
+        end
+    end
+end
+
+function _M.decodeMsg(msgType,data)
+    local recvData = assert(pb.decode(msgType,data))
+    return recvData
+end
+
+function _M.onSendMsg(msgName,req)
+    local protoMap = NetManager():GetMsgProto(msgName)
+    if protoMap and protoMap.msgID~=0 then
+        local bytes = _M.encodeMsg(protoMap.msgType,req)
+        NetManager():SendMsg(protoMap.msgID,bytes)
+    end
+end
+
+function _M.encodeMsg(msgType,req)
+	local bytes = assert(pb.encode(msgType, req))
+	return bytes
+end
+
+return _M
